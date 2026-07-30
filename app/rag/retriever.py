@@ -4,32 +4,40 @@ from langchain_chroma import Chroma
 
 CHROMA_DIR = "chroma_db"
 
-
-# Load embedding model ONCE when the module starts
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
-
-
-# Connect to ChromaDB ONCE
-vector_store = Chroma(
-    collection_name="aws_troubleshooting",
-    embedding_function=embeddings,
-    persist_directory=CHROMA_DIR
-)
+_vector_store = None
 
 
 def get_vector_store():
     """
-    Return the existing Chroma vector store.
+    Lazily initialize the embedding model and Chroma vector store.
+
+    The model is loaded only when knowledge retrieval is actually
+    requested instead of during FastAPI startup.
     """
-    return vector_store
+
+    global _vector_store
+
+    if _vector_store is None:
+
+        embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2"
+        )
+
+        _vector_store = Chroma(
+            collection_name="aws_troubleshooting",
+            embedding_function=embeddings,
+            persist_directory=CHROMA_DIR
+        )
+
+    return _vector_store
 
 
 def retrieve_cloud_knowledge(query: str, k: int = 3):
     """
-    Retrieve the most relevant AWS troubleshooting documents.
+    Retrieve relevant AWS troubleshooting documents.
     """
+
+    vector_store = get_vector_store()
 
     documents = vector_store.similarity_search(
         query,
