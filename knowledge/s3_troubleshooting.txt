@@ -1,0 +1,20 @@
+Amazon S3 Troubleshooting Guide
+
+AccessDenied:
+An S3 AccessDenied error usually occurs when the IAM identity accessing
+the object does not have sufficient permissions.
+
+For downloading objects, verify that the IAM user or role has the
+s3:GetObject permission for the required bucket and object path.
+
+Both IAM policies and S3 bucket policies should be inspected.
+An explicit Deny overrides an Allow permission.
+
+Verify that the bucket name and object key are correct.
+
+For cross-account access, both the IAM permissions and bucket policy
+must permit access from the requesting AWS account.
+
+NoSuchBucket:
+This error indicates that the requested S3 bucket does not exist.
+Verify the bucket name and AWS region.

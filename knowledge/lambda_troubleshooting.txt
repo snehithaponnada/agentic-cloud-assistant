@@ -1,0 +1,21 @@
+AWS Lambda Troubleshooting Guide
+
+Lambda Timeout:
+A Lambda function times out when its execution exceeds its configured
+timeout duration.
+
+Check the function timeout configuration and review Amazon CloudWatch
+Logs to determine where execution is spending time.
+
+Slow external APIs, database queries, network calls, and inefficient
+application code can contribute to Lambda timeouts.
+
+Increasing memory may improve execution performance because Lambda CPU
+allocation increases with memory.
+
+Lambda Permissions:
+Lambda uses an execution role to access other AWS services.
+Verify that the execution role contains the permissions required by
+the function.
+
+Check CloudWatch Logs for runtime exceptions and execution failures.

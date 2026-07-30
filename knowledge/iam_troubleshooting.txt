@@ -1,0 +1,19 @@
+AWS IAM Troubleshooting Guide
+
+AWS Identity and Access Management controls authentication and
+authorization for AWS resources.
+
+AccessDenied errors commonly indicate that an IAM user or role does
+not have permission to perform the requested action.
+
+Review identity-based policies attached to the IAM user or role.
+
+AWS evaluates Allow and Deny statements when authorizing requests.
+An explicit Deny takes precedence over an Allow.
+
+IAM policies should follow the principle of least privilege by
+granting only the permissions required by the application.
+
+When troubleshooting application permissions, identify the AWS
+identity used by the application and verify the resource ARN and
+required action.

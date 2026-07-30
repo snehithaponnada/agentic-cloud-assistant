@@ -1,0 +1,16 @@
+Amazon CloudWatch Troubleshooting Guide
+
+Amazon CloudWatch provides monitoring, metrics, logs, and alarms for
+AWS applications and resources.
+
+CloudWatch Logs can be used to investigate application errors,
+Lambda failures, exceptions, and execution behavior.
+
+CloudWatch metrics help identify latency, throttling, error rates,
+resource utilization, and unusual application behavior.
+
+When troubleshooting a Lambda function, inspect its CloudWatch log
+group and review invocation duration, errors, and memory usage.
+
+CloudWatch alarms can notify operators when a metric crosses a
+configured threshold.
