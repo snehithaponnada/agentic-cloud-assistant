@@ -1,12 +1,6 @@
 import boto3
 
-PROFILE_NAME = "agentic-cloud-assistant"
-REGION = "ap-south-1"
-
-session = boto3.Session(
-    profile_name=PROFILE_NAME,
-    region_name=REGION
-)
+session = boto3.Session()
 
 s3 = session.client("s3")
 
