@@ -7,11 +7,6 @@ langchain-core
 langchain-community
 langgraph
 langchain-google-genai
-langchain-huggingface
-langchain-chroma
-
-chromadb
-sentence-transformers
 
 boto3
 botocore[crt]
