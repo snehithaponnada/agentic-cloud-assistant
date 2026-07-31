@@ -1,47 +1,56 @@
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_chroma import Chroma
+from pathlib import Path
+
+from langchain_core.documents import Document
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
-CHROMA_DIR = "chroma_db"
+KNOWLEDGE_DIR = Path("knowledge")
 
-_vector_store = None
+documents = []
 
+for file_path in KNOWLEDGE_DIR.glob("*.txt"):
+    text = file_path.read_text(encoding="utf-8")
 
-def get_vector_store():
-    """
-    Lazily initialize the embedding model and Chroma vector store.
-
-    The model is loaded only when knowledge retrieval is actually
-    requested instead of during FastAPI startup.
-    """
-
-    global _vector_store
-
-    if _vector_store is None:
-
-        embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2"
+    documents.append(
+        Document(
+            page_content=text,
+            metadata={"source": file_path.name}
         )
+    )
 
-        _vector_store = Chroma(
-            collection_name="aws_troubleshooting",
-            embedding_function=embeddings,
-            persist_directory=CHROMA_DIR
-        )
 
-    return _vector_store
+texts = [doc.page_content for doc in documents]
+
+vectorizer = TfidfVectorizer(
+    stop_words="english"
+)
+
+document_vectors = vectorizer.fit_transform(texts)
 
 
 def retrieve_cloud_knowledge(query: str, k: int = 3):
     """
-    Retrieve relevant AWS troubleshooting documents.
+    Retrieve relevant AWS troubleshooting knowledge
+    using lightweight TF-IDF similarity.
     """
 
-    vector_store = get_vector_store()
+    if not documents:
+        return []
 
-    documents = vector_store.similarity_search(
-        query,
-        k=k
-    )
+    query_vector = vectorizer.transform([query])
 
-    return documents
+    similarities = cosine_similarity(
+        query_vector,
+        document_vectors
+    )[0]
+
+    ranked_indices = similarities.argsort()[::-1][:k]
+
+    results = []
+
+    for index in ranked_indices:
+        if similarities[index] > 0:
+            results.append(documents[index])
+
+    return results
