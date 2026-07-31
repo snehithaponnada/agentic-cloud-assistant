@@ -5,7 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-KNOWLEDGE_DIR = Path("knowledge")
+KNOWLEDGE_DIR = Path(__file__).resolve().parent.parent.parent / "knowledge"
 
 documents = []
 
